@@ -12,12 +12,12 @@ interface CSVDataInterface
 {
 
 	/**
-	 * Load csv data from a file.
+	 * Loads csv data from a file.
 	 *
 	 * @param string $filepath
 	 *  The path to the file to load.
 	 */
-	public function loadCSV($filepath);
+	public function __construct($filepath);
 
 	/**
 	 * Get the csv data stored in this class instance.
