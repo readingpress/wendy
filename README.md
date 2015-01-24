@@ -9,3 +9,4 @@ Financial trading strategy testing software.
 
 ## Installation
 1. From the terminal `cd` into this project's directory and run `vagrant up`.
+2. Add the following entry to your hosts file `192.168.33.10   wendy.dev www.wendy.dev`.
