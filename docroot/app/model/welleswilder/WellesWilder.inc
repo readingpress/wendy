@@ -18,7 +18,7 @@ class WellesWilder implements WellesWilderInterface
 	 *  An array of market data.
 	 */
 	public function __construct($data) {
-
+		
 	}
 
 }
