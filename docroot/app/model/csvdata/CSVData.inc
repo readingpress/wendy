@@ -25,6 +25,10 @@ class CSVData implements CSVDataInterface
 	 *  The path to the file to load.
 	 */
 	public function __construct($filepath) {
+		if (!is_string($filepath)) {
+			throw new InvalidArgumentException('Invalid filepath.');
+		}
+		
 		$file = fopen($filepath, 'r');
 		$keys = fgetcsv($file);
 		while (!feof($file)) {
