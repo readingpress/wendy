@@ -11,3 +11,7 @@
  */
 define('WENDY_ROOT', getcwd());
 require_once WENDY_ROOT . '/app/bootstrap.php';
+
+$data = new CSVData(WENDY_ROOT . '/data/AUDUSD_day.csv');
+print '<pre>';
+$ww = new WellesWilder($data->getCSVData());
