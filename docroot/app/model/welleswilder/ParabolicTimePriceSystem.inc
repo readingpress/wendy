@@ -60,24 +60,6 @@ class ParabolicTimePriceSystem extends WellesWilder implements WellesWilderInter
 	}
 
 	/**
-	 * Processes one trading interval.
-	 *
-	 * @param integer $index
-	 *  The index of the next bar.
-	 */
-	protected function interval($index) {
-		if (!is_numeric($index)) {
-			throw new InvalidArgumentException('Invalid index.');
-		}
-		// We are on the last item in the data array. We can't continue.
-		if (!isset($this->data[$index + 1])) {
-			return;
-		}
-		$intMethod = "{$this->currentTrade->getDirection()}Interval";
-		$this->$intMethod($this->data[$index + 1], $this->data[$index]);
-	}
-
-	/**
 	 * Crunches an interval for a short trade.
 	 *
 	 * @param array $curr
@@ -85,7 +67,7 @@ class ParabolicTimePriceSystem extends WellesWilder implements WellesWilderInter
 	 * @param array $prev
 	 *  The previous bar.
 	 */
-	private function shortInterval($curr, $prev) {
+	protected function shortInterval($curr, $prev) {
 		// The trade is over. We need to reverse.
 		if ($curr['high'] > $this->sar) {
 			$this->currentTrade->crunchBar($curr, TRUE);
@@ -130,7 +112,7 @@ class ParabolicTimePriceSystem extends WellesWilder implements WellesWilderInter
 	 * @param array $prev
 	 *  The previous bar.
 	 */
-	private function longInterval($curr, $prev) {
+	protected function longInterval($curr, $prev) {
 		// The trade is over. We need to reverse.
 		if ($curr['low'] < $this->sar) {
 			$this->currentTrade->crunchBar($curr, TRUE);

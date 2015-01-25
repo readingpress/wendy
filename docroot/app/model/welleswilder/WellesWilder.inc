@@ -46,23 +46,12 @@ class WellesWilder implements WellesWilderInterface
 		if (!is_array($data)) {
 			throw new InvalidArgumentException('Invalid data.');
 		}
-
-		foreach ($data as $key => &$value) {
-			$value['lop'] = $value['hip'] = FALSE;
-			if (!isset($data[$key + 1]) || !isset($data[$key - 1])) {
-				continue;
-			}
-
-			if ($value['low'] < $data[$key - 1]['low'] && $value['low'] < $data[$key + 1]['low']) {
-				$value['lop'] = TRUE;
-			}
-
-			if ($value['high'] > $data[$key - 1]['high'] && $value['high'] > $data[$key + 1]['high']) {
-				$value['hip'] = TRUE;
-			}
-		}
 		$this->data = $data;
 		$this->current = 0;
+		$this->getExtremes();
+		$this->getTrueRange();
+		print '<pre>';
+		var_dump($this->data);
 	}
 
 	/**
@@ -76,15 +65,21 @@ class WellesWilder implements WellesWilderInterface
 	}
 
 	/**
-	 * Executes one trading interval.
+	 * Processes one trading interval.
 	 *
-	 * @param array $prev
-	 *  The previous intervals key in the data array.
-	 * @param array $curr
-	 *	The current intervals key in the data array.
+	 * @param integer $index
+	 *  The index of the next bar.
 	 */
-	protected function interval($curr) {
-
+	protected function interval($index) {
+		if (!is_numeric($index)) {
+			throw new InvalidArgumentException('Invalid index.');
+		}
+		// We are on the last item in the data array. We can't continue.
+		if (!isset($this->data[$index + 1])) {
+			return;
+		}
+		$intMethod = "{$this->currentTrade->getDirection()}Interval";
+		$this->$intMethod($this->data[$index + 1], $this->data[$index]);
 	}
 
 	/**
@@ -102,6 +97,74 @@ class WellesWilder implements WellesWilderInterface
 	 */
 	public function getTrades() {
 		return $this->trades;
+	}
+
+	/**
+	 * Crunches an interval for a short trade.
+	 *
+	 * @param array $curr
+	 *  The current bar.
+	 * @param array $prev
+	 *  The previous bar.
+	 */
+	protected function shortInterval($curr, $prev) {
+
+	}
+
+	/**
+	 * Crunches an interval for a long trade.
+	 *
+	 * @param array $curr
+	 *  The current bar.
+	 * @param array $prev
+	 *  The previous bar.
+	 */
+	protected function longInterval($curr, $prev) {
+
+	}
+
+	/**
+	 * Get high points and low points and add them as properties to the trading
+	 * data.
+	 */
+	private function getExtremes() {
+		foreach ($this->data as $key => &$value) {
+			$value['lop'] = $value['hip'] = FALSE;
+			if (!isset($this->data[$key + 1]) || !isset($this->data[$key - 1])) {
+				continue;
+			}
+
+			if ($value['low'] < $this->data[$key - 1]['low'] && $value['low'] < $this->data[$key + 1]['low']) {
+				$value['lop'] = TRUE;
+			}
+
+			if ($value['high'] > $this->data[$key - 1]['high'] && $value['high'] > $this->data[$key + 1]['high']) {
+				$value['hip'] = TRUE;
+			}
+		}
+	}
+
+	private function getTrueRange() {
+		foreach ($this->data as $key => &$value) {
+			$r1 = $value['high'] - $value['low'];
+			$r2 = isset($this->data[$key - 1]) ? $value['high'] - $this->data[$key - 1]['close'] : 0;
+			$r3 = isset($this->data[$key - 1]) ? $this->data[$key - 1]['close'] - $value['low'] : 0;
+			$value['true_range'] = max(array($r1, $r2, $r3));
+			if ($key - 13 < 0) {
+				$value['volatility_index'] = FALSE;
+				continue;
+			}
+			if ($key - 13 == 0) {
+				$trsum = 0;
+				for ($i = 0; $i <= $key; $i++) {
+					$trsum += $this->data[$i]['true_range'];
+				}
+				$value['volatility_index'] = $trsum / 14;
+				continue;
+			}
+
+			$value['volatility_index'] = (13 * $this->data[$key - 1]['volatility_index'] + $value['true_range']) / 14;
+		}
 	}
 
 }

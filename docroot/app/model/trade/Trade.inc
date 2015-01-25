@@ -103,7 +103,7 @@ class Trade implements TradeInterface
 		$high = $bar['high'];
 		$low = $bar['low'];
 		// If this is a closing bar, we cannot assume that the high/low was met 
-		// before the trade closed. So we use the open.
+		// before the trade closed. So we use the closing price.
 		if ($close) {
 			$high = $low = $bar['close'];
 		}

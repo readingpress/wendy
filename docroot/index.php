@@ -34,109 +34,19 @@ foreach ($trades as $trade) {
 	$max += $trade->getMax();
 }
 print 'Total Trades: ' . count($trades) . '<br />';
-print 'Total Profit: $' . round($profit, 4) . '<br />';
-print 'Largest Profit: $' . round($largest, 4) . '</br>';
-print 'Average Profit: $' . round($profit / count($trades), 4) . '</br>';
-print 'Total Highs: $' . round($max, 4) . '<br />';
-print 'Average High: $' . round($max / count($trades), 4) . '<br />';
-print 'Success Rate: ' . round($winners / count($trades) * 100) . '%<br />';
+print 'Total Profit: $' . number_format($profit, 4) . '<br />';
+print 'Largest Profit: $' . number_format($largest, 4) . '</br>';
+print 'Average Profit: $' . number_format($profit / count($trades), 4) . '</br>';
+print 'Total Highs: $' . number_format($max, 4) . '<br />';
+print 'Average High: $' . number_format($max / count($trades), 4) . '<br />';
+print 'Success Rate: ' . number_format($winners / count($trades) * 100) . '%<br />';
 
-print '<h3>EUR/USD</h3>';
-$data = new CSVData(WENDY_ROOT . '/data/EURUSD_day.csv');
-$ww = new ParabolicTimePriceSystem($data->getCSVData());
-$ww->crunch();
-$trades = $ww->getTrades();
-$profit = 0;
-$winners = 0;
-$max = 0;
+$account = 2000;
 foreach ($trades as $trade) {
-	if ($trade->winner()) {
-		$winners++;
-	}
-	$p = $trade->getProfit();
-	$largest = $p > $largest ? $p : $largest;
-	$profit += $p;
-	$max += $trade->getMax();
+	$chunk = $account / 10;
+	$profit = $chunk * number_format($trade->getProfit() - .0004, 4) * 50;
+	$account += $profit;
 }
-print 'Total Trades: ' . count($trades) . '<br />';
-print 'Total Profit: $' . round($profit, 4) . '<br />';
-print 'Largest Profit: $' . round($largest, 4) . '</br>';
-print 'Average Profit: $' . round($profit / count($trades), 4) . '</br>';
-print 'Total Highs: $' . round($max, 4) . '<br />';
-print 'Average High: $' . round($max / count($trades), 4) . '<br />';
-print 'Success Rate: ' . round($winners / count($trades) * 100) . '%<br />';
 
-print '<h3>NZD/USD</h3>';
-$data = new CSVData(WENDY_ROOT . '/data/NZDUSD_day.csv');
-$ww = new ParabolicTimePriceSystem($data->getCSVData());
-$ww->crunch();
-$trades = $ww->getTrades();
-$profit = 0;
-$winners = 0;
-$max = 0;
-foreach ($trades as $trade) {
-	if ($trade->winner()) {
-		$winners++;
-	}
-	$p = $trade->getProfit();
-	$largest = $p > $largest ? $p : $largest;
-	$profit += $p;
-	$max += $trade->getMax();
-}
-print 'Total Trades: ' . count($trades) . '<br />';
-print 'Total Profit: $' . round($profit, 4) . '<br />';
-print 'Largest Profit: $' . round($largest, 4) . '</br>';
-print 'Average Profit: $' . round($profit / count($trades), 4) . '</br>';
-print 'Total Highs: $' . round($max, 4) . '<br />';
-print 'Average High: $' . round($max / count($trades), 4) . '<br />';
-print 'Success Rate: ' . round($winners / count($trades) * 100) . '%<br />';
-
-print '<h3>USD/CAD</h3>';
-$data = new CSVData(WENDY_ROOT . '/data/USDCAD_day.csv');
-$ww = new ParabolicTimePriceSystem($data->getCSVData());
-$ww->crunch();
-$trades = $ww->getTrades();
-$profit = 0;
-$winners = 0;
-$max = 0;
-foreach ($trades as $trade) {
-	if ($trade->winner()) {
-		$winners++;
-	}
-	$p = $trade->getProfit();
-	$largest = $p > $largest ? $p : $largest;
-	$profit += $p;
-	$max += $trade->getMax();
-}
-print 'Total Trades: ' . count($trades) . '<br />';
-print 'Total Profit: $' . round($profit, 4) . '<br />';
-print 'Largest Profit: $' . round($largest, 4) . '</br>';
-print 'Average Profit: $' . round($profit / count($trades), 4) . '</br>';
-print 'Total Highs: $' . round($max, 4) . '<br />';
-print 'Average High: $' . round($max / count($trades), 4) . '<br />';
-print 'Success Rate: ' . round($winners / count($trades) * 100) . '%<br />';
-
-print '<h3>USD/CAD</h3>';
-$data = new CSVData(WENDY_ROOT . '/data/USDCHF_day.csv');
-$ww = new ParabolicTimePriceSystem($data->getCSVData());
-$ww->crunch();
-$trades = $ww->getTrades();
-$profit = 0;
-$winners = 0;
-$max = 0;
-foreach ($trades as $trade) {
-	if ($trade->winner()) {
-		$winners++;
-	}
-	$p = $trade->getProfit();
-	$largest = $p > $largest ? $p : $largest;
-	$profit += $p;
-	$max += $trade->getMax();
-}
-print 'Total Trades: ' . count($trades) . '<br />';
-print 'Total Profit: $' . round($profit, 4) . '<br />';
-print 'Largest Profit: $' . round($largest, 4) . '</br>';
-print 'Average Profit: $' . round($profit / count($trades), 4) . '</br>';
-print 'Total Highs: $' . round($max, 4) . '<br />';
-print 'Average High: $' . round($max / count($trades), 4) . '<br />';
-print 'Success Rate: ' . round($winners / count($trades) * 100) . '%<br />';
+print 'Account starting at $2000 trading 10% on each trade, with 50 leverage.<br />';
+print '$' . number_format($account, 2);
