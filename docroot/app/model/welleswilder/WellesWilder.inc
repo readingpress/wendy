@@ -50,8 +50,7 @@ class WellesWilder implements WellesWilderInterface
 		$this->current = 0;
 		$this->getExtremes();
 		$this->getTrueRange();
-		print '<pre>';
-		var_dump($this->data);
+		$this->addDM();
 	}
 
 	/**
@@ -164,6 +163,19 @@ class WellesWilder implements WellesWilderInterface
 			}
 
 			$value['volatility_index'] = (13 * $this->data[$key - 1]['volatility_index'] + $value['true_range']) / 14;
+		}
+	}
+
+	private function addDM() {
+		foreach ($this->data as $key => &$value) {
+			if ($key == 0) {
+				continue;
+			}
+			$plus_dm = $value['high'] - $this->data[$key - 1]['high'] > 0 ? $value['high'] - $this->data[$key - 1]['high'] : 0;
+			$minus_dm = $this->data[$key - 1]['low'] - $value['low'] > 0 ? $this->data[$key - 1]['low'] - $value['low'] : 0;
+			$value['plus_di'] = $value['true_range'] > 0 ? $plus_dm / $value['true_range'] : 0;
+			$value['minus_di'] = $value['true_range'] > 0 ? $minus_dm / $value['true_range'] : 0;
+
 		}
 	}
 
