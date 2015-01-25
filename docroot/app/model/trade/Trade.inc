@@ -66,6 +66,12 @@ class Trade implements TradeInterface
 	private $winner;
 
 	/**
+	 * @var boolean $max
+	 *  The maximum profit that the trade had during its lifetime.
+	 */
+	private $max;
+
+	/**
 	 * Set up basic trade properties
 	 *
 	 * @param string $dir
@@ -83,6 +89,7 @@ class Trade implements TradeInterface
 		$this->low = 100000000000;
 		$this->profit = 0;
 		$this->winner = FALSE;
+		$this->max = 0;
 	}
 
 	/**
@@ -138,7 +145,7 @@ class Trade implements TradeInterface
 	public function close($exit, $bar) {
 		$this->exit = $exit;
 		$this->close = $bar;
-		$this->profit();
+		$this->calculateProfit();
 	}
 
 	/**
@@ -162,23 +169,35 @@ class Trade implements TradeInterface
 	}
 
 	/**
+	 * Return the maximum profit that the trade had during its lifetime.
+	 *
+	 * @return float
+	 *  The maximum profit that the trade had during its lifetime.
+	 */
+	public function getMax() {
+		return $this->max;
+	}
+
+	/**
 	 * Return the dollar amount gained/lossed for this trade.
 	 *
 	 * @return float
 	 *  The total dollar amount.
 	 */
-	private function profit() {
+	private function calculateProfit() {
 		switch ($this->dir) {
 			case 'short':
 				if ($this->entrance > $this->exit) {
 					$this->winner = TRUE;
 				}
+				$this->max = $this->entrance - $this->low;
 				$this->profit = $this->entrance - $this->exit;
 				break;
 			case 'long':
 				if ($this->entrance < $this->exit) {
 					$this->winner = TRUE;
 				}
+				$this->max = $this->high - $this->entrance;
 				$this->profit = $this->exit - $this->entrance;
 				break;
 		}

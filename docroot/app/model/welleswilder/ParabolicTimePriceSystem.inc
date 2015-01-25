@@ -44,12 +44,14 @@ class ParabolicTimePriceSystem extends WellesWilder implements WellesWilderInter
 		foreach ($this->data as $key => $bar) {
 			if ($bar['hip']) {
 				$this->currentTrade = new Trade('short', $bar['close'], $bar);
+				$this->current = $key;
 				$this->sar = $bar['high'];
 				break;
 			}
 
 			if ($bar['lop']) {
 				$this->currentTrade = new Trade('long', $bar['close'], $bar);
+				$this->current = $key;
 				$this->sar = $bar['low'];
 				break;
 			}
@@ -71,7 +73,6 @@ class ParabolicTimePriceSystem extends WellesWilder implements WellesWilderInter
 		if (!isset($this->data[$index + 1])) {
 			return;
 		}
-		
 		$intMethod = "{$this->currentTrade->getDirection()}Interval";
 		$this->$intMethod($this->data[$index + 1], $this->data[$index]);
 	}
@@ -85,16 +86,20 @@ class ParabolicTimePriceSystem extends WellesWilder implements WellesWilderInter
 	 *  The previous bar.
 	 */
 	private function shortInterval($curr, $prev) {
-		// The trade is over. We need to reverse.
-		if ($curr['high'] > $this->sar) {
-			$this->currentTrade->close($this->sar, $curr);
-			$this->trades[] = $this->currentTrade;
-			$this->currentTrade = new Trade('long', $this->sar, $curr);
-		}
 		// Check to see if there is a new low. If there is, we need to increase the
 		// af (acceleration factor) by .02.
 		$new_low = $curr['low'] < $this->currentTrade->getLow();
 		$this->currentTrade->crunchBar($curr);
+		// The trade is over. We need to reverse.
+		if ($curr['high'] > $this->sar) {
+			$this->currentTrade->close($this->sar, $curr);
+			$this->trades[] = $this->currentTrade;
+			$sip = $this->currentTrade->getLow();
+			$this->currentTrade = new Trade('long', $this->sar, $curr);
+			$this->af = .02;
+			$this->sar = $sip;
+			return;
+		}
 		// Next, update the sar. First we obtain the difference between the lowest
 		// price reached while in the trade and the current sar.
 		$diff = $this->sar - $this->currentTrade->getLow();
@@ -125,16 +130,20 @@ class ParabolicTimePriceSystem extends WellesWilder implements WellesWilderInter
 	 *  The previous bar.
 	 */
 	private function longInterval($curr, $prev) {
-		// The trade is over. We need to reverse.
-		if ($curr['low'] < $this->sar) {
-			$this->currentTrade->close($this->sar, $curr);
-			$this->trades[] = $this->currentTrade;
-			$this->currentTrade = new Trade('short', $this->sar, $curr);
-		}
 		// Check to see if there is a new high. If there is, we need to increase the
 		// af (acceleration factor) by .02.
 		$new_high = $curr['high'] > $this->currentTrade->getHigh();
 		$this->currentTrade->crunchBar($curr);
+		// The trade is over. We need to reverse.
+		if ($curr['low'] < $this->sar) {
+			$this->currentTrade->close($this->sar, $curr);
+			$this->trades[] = $this->currentTrade;
+			$sip = $this->currentTrade->getHigh();
+			$this->currentTrade = new Trade('short', $this->sar, $curr);
+			$this->af = .02;
+			$this->sar = $sip;
+			return;
+		}
 		// Next, update the sar. First we obtain the difference between the highest
 		// price reached while in the trade and the current sar.
 		$diff = $this->currentTrade->getHigh() - $this->sar;
