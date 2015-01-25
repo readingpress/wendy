@@ -99,9 +99,16 @@ class Trade implements TradeInterface
 	 * @param array $bar
 	 *  An associative array of data representing a single bar.
 	 */
-	public function crunchBar($bar) {
-		$this->high = max(array($this->high, $bar['high']));
-		$this->low = min(array($this->low, $bar['low']));
+	public function crunchBar($bar, $close = FALSE) {
+		$high = $bar['high'];
+		$low = $bar['low'];
+		// If this is a closing bar, we cannot assume that the high/low was met 
+		// before the trade closed. So we use the open.
+		if ($close) {
+			$high = $low = $bar['close'];
+		}
+		$this->high = max(array($this->high, $high));
+		$this->low = min(array($this->low, $low));
 	}
 
 	/**

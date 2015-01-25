@@ -86,12 +86,9 @@ class ParabolicTimePriceSystem extends WellesWilder implements WellesWilderInter
 	 *  The previous bar.
 	 */
 	private function shortInterval($curr, $prev) {
-		// Check to see if there is a new low. If there is, we need to increase the
-		// af (acceleration factor) by .02.
-		$new_low = $curr['low'] < $this->currentTrade->getLow();
-		$this->currentTrade->crunchBar($curr);
 		// The trade is over. We need to reverse.
 		if ($curr['high'] > $this->sar) {
+			$this->currentTrade->crunchBar($curr, TRUE);
 			$this->currentTrade->close($this->sar, $curr);
 			$this->trades[] = $this->currentTrade;
 			$sip = $this->currentTrade->getLow();
@@ -100,6 +97,10 @@ class ParabolicTimePriceSystem extends WellesWilder implements WellesWilderInter
 			$this->sar = $sip;
 			return;
 		}
+		// Check to see if there is a new low. If there is, we need to increase the
+		// af (acceleration factor) by .02.
+		$new_low = $curr['low'] < $this->currentTrade->getLow();
+		$this->currentTrade->crunchBar($curr);
 		// Next, update the sar. First we obtain the difference between the lowest
 		// price reached while in the trade and the current sar.
 		$diff = $this->sar - $this->currentTrade->getLow();
@@ -130,12 +131,9 @@ class ParabolicTimePriceSystem extends WellesWilder implements WellesWilderInter
 	 *  The previous bar.
 	 */
 	private function longInterval($curr, $prev) {
-		// Check to see if there is a new high. If there is, we need to increase the
-		// af (acceleration factor) by .02.
-		$new_high = $curr['high'] > $this->currentTrade->getHigh();
-		$this->currentTrade->crunchBar($curr);
 		// The trade is over. We need to reverse.
 		if ($curr['low'] < $this->sar) {
+			$this->currentTrade->crunchBar($curr, TRUE);
 			$this->currentTrade->close($this->sar, $curr);
 			$this->trades[] = $this->currentTrade;
 			$sip = $this->currentTrade->getHigh();
@@ -144,6 +142,10 @@ class ParabolicTimePriceSystem extends WellesWilder implements WellesWilderInter
 			$this->sar = $sip;
 			return;
 		}
+		// Check to see if there is a new high. If there is, we need to increase the
+		// af (acceleration factor) by .02.
+		$new_high = $curr['high'] > $this->currentTrade->getHigh();
+		$this->currentTrade->crunchBar($curr);
 		// Next, update the sar. First we obtain the difference between the highest
 		// price reached while in the trade and the current sar.
 		$diff = $this->currentTrade->getHigh() - $this->sar;
