@@ -22,13 +22,19 @@ $ww->crunch();
 $trades = $ww->getTrades();
 $profit = 0;
 $winners = 0;
+$largest = 0;
 foreach ($trades as $trade) {
 	if ($trade->winner()) {
 		$winners++;
 	}
-	$profit += $trade->getProfit();
+	$p = $trade->getProfit();
+	$largest = $p > $largest ? $p : $largest;
+	$profit += $p;
+
 }
-print 'Profit: $' . round($profit, 2) . '<br />';
+print 'Total Profit: $' . round($profit, 2) . '<br />';
+print 'Largest Profit: ' . round($largest, 2) . '</br>';
+print 'Average Profit: ' . round($profit / count($trades), 2) . '</br>';
 print 'Success Rate: ' . round($winners / count($trades) * 100) . '%<br />';
 
 print '<h3>EUR/USD</h3>';
@@ -42,9 +48,13 @@ foreach ($trades as $trade) {
 	if ($trade->winner()) {
 		$winners++;
 	}
-	$profit += $trade->getProfit();
+	$p = $trade->getProfit();
+	$largest = $p > $largest ? $p : $largest;
+	$profit += $p;
 }
-print 'Profit: $' . round($profit, 2) . '<br />';
+print 'Total Profit: $' . round($profit, 2) . '<br />';
+print 'Largest Profit: ' . round($largest, 2) . '</br>';
+print 'Average Profit: ' . round($profit / count($trades), 2) . '</br>';
 print 'Success Rate: ' . round($winners / count($trades) * 100) . '%<br />';
 
 print '<h3>NZD/USD</h3>';
@@ -58,9 +68,13 @@ foreach ($trades as $trade) {
 	if ($trade->winner()) {
 		$winners++;
 	}
-	$profit += $trade->getProfit();
+	$p = $trade->getProfit();
+	$largest = $p > $largest ? $p : $largest;
+	$profit += $p;
 }
-print 'Profit: $' . round($profit, 2) . '<br />';
+print 'Total Profit: $' . round($profit, 2) . '<br />';
+print 'Largest Profit: ' . round($largest, 2) . '</br>';
+print 'Average Profit: ' . round($profit / count($trades), 2) . '</br>';
 print 'Success Rate: ' . round($winners / count($trades) * 100) . '%<br />';
 
 print '<h3>USD/CAD</h3>';
@@ -74,9 +88,13 @@ foreach ($trades as $trade) {
 	if ($trade->winner()) {
 		$winners++;
 	}
-	$profit += $trade->getProfit();
+	$p = $trade->getProfit();
+	$largest = $p > $largest ? $p : $largest;
+	$profit += $p;
 }
-print 'Profit: $' . round($profit, 2) . '<br />';
+print 'Total Profit: $' . round($profit, 2) . '<br />';
+print 'Largest Profit: ' . round($largest, 2) . '</br>';
+print 'Average Profit: ' . round($profit / count($trades), 2) . '</br>';
 print 'Success Rate: ' . round($winners / count($trades) * 100) . '%<br />';
 
 print '<h3>USD/CAD</h3>';
@@ -90,7 +108,11 @@ foreach ($trades as $trade) {
 	if ($trade->winner()) {
 		$winners++;
 	}
-	$profit += $trade->getProfit();
+	$p = $trade->getProfit();
+	$largest = $p > $largest ? $p : $largest;
+	$profit += $p;
 }
-print 'Profit: $' . round($profit, 2) . '<br />';
+print 'Total Profit: $' . round($profit, 2) . '<br />';
+print 'Largest Profit: ' . round($largest, 2) . '</br>';
+print 'Average Profit: ' . round($profit / count($trades), 2) . '</br>';
 print 'Success Rate: ' . round($winners / count($trades) * 100) . '%<br />';
