@@ -142,6 +142,16 @@ class Trade implements TradeInterface
 	}
 
 	/**
+	 * Get the low for this trade.
+	 *
+	 * @return float
+	 *  The low for the trade.
+	 */
+	public function getOpen() {
+		return $this->open;
+	}
+
+	/**
 	 * Close the trade.
 	 *
 	 * @param float $exit
