@@ -15,3 +15,7 @@ ini_set('display_errors', 'On');
 define('WENDY_ROOT', getcwd());
 require_once WENDY_ROOT . '/app/bootstrap.php';
 
+print '<pre>';
+
+$data = new CSVData(WENDY_ROOT . '/data/AUDUSD_day.csv');
+$dm = new DirectionalMovement($data->getCSVData());
