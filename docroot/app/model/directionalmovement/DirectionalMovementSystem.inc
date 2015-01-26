@@ -32,6 +32,14 @@ class DirectionalMovementSystem extends DirectionalMovement implements Direction
 				continue;
 			}
 
+			// If there is currently a trade and the stop has not been hit yet, 
+			// continue.
+			if ($this->trade && $stop = $this->trade->stop($curr)) {
+				$this->trade->close($stop, $curr);
+				$this->trades[] = $this->trade;
+				$this->trade = FALSE;
+			}
+
 			$prev = $data[$key - 1];
 			if ($dir = $this->cross($curr, $prev)) {
 				if ($this->trade) {

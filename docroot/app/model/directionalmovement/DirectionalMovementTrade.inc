@@ -62,13 +62,19 @@ class DirectionalMovementTrade
 	}
 
 	/**
-	 * Get the stop for a trade.
+	 * Returns whether the stop for the trade has been hit in a bar.
 	 *
-	 * @return integer
-	 *  The stop for this trade.
+	 * @param array $bar
+	 *  The bar to check.
+	 *
+	 * @return mixed
+	 *  The stop value, if it was hit, FALSE otherwise.
 	 */
-	public function getStop() {
-		return $this->stop;
+	public function stop($bar) {
+		if ($this->stop > $bar['low'] && $this->stop < $bar['high']) {
+			return $this->stop;
+		}
+		return FALSE;
 	}
 
 	/**
