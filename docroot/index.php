@@ -18,4 +18,5 @@ require_once WENDY_ROOT . '/app/bootstrap.php';
 print '<pre>';
 
 $data = new CSVData(WENDY_ROOT . '/data/AUDUSD_day.csv');
-$dm = new DirectionalMovement($data->getCSVData());
+$dms = new DirectionalMovementSystem($data->getCSVData());
+var_dump($dms->getData());

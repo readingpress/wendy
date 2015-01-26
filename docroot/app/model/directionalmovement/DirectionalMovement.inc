@@ -15,6 +15,12 @@ class DirectionalMovement implements DirectionalMovementInterface
 	private $average_period = 14;
 
 	/**
+	 * @var array $data
+	 *  The number of intervals to use in averages for the data in this system.
+	 */
+	private $data = 14;
+
+	/**
 	 * Add Directional Movement Data to Market Information.
 	 *
 	 * @param array $data
@@ -64,7 +70,25 @@ class DirectionalMovement implements DirectionalMovementInterface
 			// average calculation method rather than a traditional average.
 			$this->proxyADX($curr, $prev);
 		}
-		var_dump($data);
+		$this->data = $data;
+
+	}
+
+	/**
+	 * Get the data.
+	 *
+	 * @return array
+	 *  The data with all calculations performed.
+	 */
+	public function getData() {
+		return $this->data;
+	}
+
+	/**
+	 * Run the active strategy against the data. It is empty in this class, 
+	 * because each child class will make its own implementation.
+	 */
+	public function crunch() {
 
 	}
 
