@@ -19,4 +19,14 @@ print '<pre>';
 
 $data = new CSVData(WENDY_ROOT . '/data/AUDUSD_day.csv');
 $dms = new DirectionalMovementSystem($data->getCSVData());
-var_dump($dms->getData());
+$dms->crunch();
+$trades = $dms->getTrades();
+
+$profit = 0;
+foreach ($trades as $trade) {
+	$profit += $trade->profit();
+}
+
+print 'Total trades: ' . count($trades) . '<br />';
+print 'Total profit: ' . number_format($profit, 4) . '<br />';
+print 'Average profit: ' . number_format($profit / count($trades), 4) . '<br />';

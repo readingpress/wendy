@@ -52,7 +52,7 @@ class DirectionalMovement implements DirectionalMovementInterface
 			// In each subsequent iteration, we use an accumulation technique. This
 			// has the advantage of applying a smoothing effect to the data.
 			$this->proxySums($curr, $prev);
-			// We can now have enough data to add our directional indicators
+			// We now have enough data to add our directional indicators
 			$this->directionalIndicators($curr);
 			if ($key < (2 * $this->average_period)) {
 				continue;
