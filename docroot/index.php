@@ -22,21 +22,17 @@ $dms = new DirectionalMovementSystem($data->getCSVData());
 $dms->crunch();
 $trades = $dms->getTrades();
 
-$account = 2000;
 $profit = 0;
 $winners = 0;
 foreach ($trades as $trade) {
-	$chunk = $account / 10;
-	$trade_profit = $trade->profit();
-	if ($trade_profit - .0004 > 0) {
+	$tp = $trade->profit();
+	$profit += $tp;
+	if ($tp > 0) {
 		$winners++;
 	}
-	$profit += $trade_profit;
-	$account += ($trade_profit - .0004) * $chunk * 50;
 }
 
 print 'Total trades: ' . count($trades) . '<br />';
 print 'Total profit: ' . number_format($profit, 4) . '<br />';
 print 'Average profit: ' . number_format($profit / count($trades), 4) . '<br />';
-var_dump($winners);
-var_dump($account);
+print 'Success rate: ' . round($winners / count($trades) * 100) . '%<br />';

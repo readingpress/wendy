@@ -32,16 +32,18 @@ class DirectionalMovementSystem extends DirectionalMovement implements Direction
 				continue;
 			}
 
-			// If there is currently a trade and the stop has not been hit yet, 
-			// continue.
-			if ($this->trade && $stop = $this->trade->stop($curr)) {
+			// If there is currently a trade, check if the take profit or stop have
+			// been hit.
+			/*if ($this->trade && ($stop = $this->takeProfit($curr, $prev) || $stop = $this->trade->stop($curr))) {
 				$this->trade->close($stop, $curr);
 				$this->trades[] = $this->trade;
 				$this->trade = FALSE;
-			}
+			}*/
 
 			$prev = $data[$key - 1];
-			if ($dir = $this->cross($curr, $prev)) {
+			if (/*!$this->trade &&*/ $dir = $this->cross($curr, $prev)) {
+				// @TODO remove this maybe. The first condition above can be removed to
+				// see the earlier state of the system.
 				if ($this->trade) {
 					$this->trade->close($curr['close'], $curr);
 					$this->trades[] = $this->trade;
@@ -90,6 +92,26 @@ class DirectionalMovementSystem extends DirectionalMovement implements Direction
 			}
 		}
 		return $trade;
+	}
+
+	/**
+	 * Return whether a current trade should settle out based on the take profit
+	 * rules.
+	 *
+	 * @param array $curr
+	 *  The current bar.
+	 * @param array $prev
+	 *  The previous bar.
+	 *
+	 * @return mixed
+	 *  The take profit if it has been hit, or false if not.
+	 */
+	private function takeProfit($curr, $prev) {
+		$adx_on_top = $curr['adx'] > $curr['plus_di'] && $curr['adx'] > $curr['minus_di'];
+		if ($adx_on_top && $curr['adx'] < $prev['adx']) {
+			return $curr['close'];
+		}
+		return FALSE;
 	}
 
 }
