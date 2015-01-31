@@ -31,6 +31,18 @@ class DirectionalMovementSystem extends DirectionalMovement implements Direction
 				continue;
 			}
 
+			if ($this->trade && $curr['adx'] > $curr['plus_di'] && $curr['adx'] > $curr['minus_di'] && $curr['adx'] < $prev['adx']) {
+				$this->trade->close($curr['close'], $curr);
+				$this->trades[] = $this->trade;
+				$this->trade = FALSE;				
+			}
+
+			if ($this->trade && $stop = $this->trade->stop($curr)) {
+				$this->trade->close($stop, $curr);
+				$this->trades[] = $this->trade;
+				$this->trade = FALSE;				
+			}
+
 			$prev = $data[$key - 1];
 			if ($dir = $this->cross($curr, $prev)) {
 				// If there is a trade, close it out.
@@ -39,8 +51,10 @@ class DirectionalMovementSystem extends DirectionalMovement implements Direction
 					$this->trades[] = $this->trade;
 					$this->trade = FALSE;
 				}
+				if ($curr['adx'] > 20) {
+					$this->trade = new DirectionalMovementTrade($curr['close'], $dir, $curr);					
+				}
 
-				$this->trade = new DirectionalMovementTrade($curr['close'], $dir, $curr);
 			}
 		}
 	}
