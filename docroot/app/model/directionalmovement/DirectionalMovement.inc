@@ -37,6 +37,10 @@ class DirectionalMovement implements DirectionalMovementInterface
 			$prev =  $data[$key - 1];
 			$curr['tr_1'] = $this->trueRange($curr, $prev);
 			$curr = array_merge($curr, $this->directionalMovement($curr, $prev));
+			// As long as we are at least on bar 3, add the momentum factor.
+			if ($key > 1) {
+				$this->momentumFactor($curr, $data[$key - 2]);
+			}
 			// We continue until we have enough bars to apply our average period.
 			if ($key < $this->average_period) {
 				continue;
@@ -274,6 +278,18 @@ class DirectionalMovement implements DirectionalMovementInterface
 	 */
 	private function adxr(&$curr, $prev) {
 		$curr['adxr'] = round(($curr['adx'] + $prev['adx']) / 2);
+	}
+
+	/**
+	 * Add the Momentum Factor to the current bars data.
+	 *
+	 * @param array $curr
+	 *	The current time bar. Passed by reference.
+	 * @param array $prev
+	 *  The time bar 2 days ago.
+	 */
+	private function momentumFactor(&$curr, $prev) {
+		$curr['mf'] = $curr['close'] - $prev['close'];
 	}
 
 }
