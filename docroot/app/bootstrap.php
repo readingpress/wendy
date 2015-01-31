@@ -13,3 +13,5 @@ require_once WENDY_ROOT . '/app/model/directionalmovement/DirectionalMovementTra
 require_once WENDY_ROOT . '/app/model/directionalmovement/DirectionalMovementInterface.inc';
 require_once WENDY_ROOT . '/app/model/directionalmovement/DirectionalMovement.inc';
 require_once WENDY_ROOT . '/app/model/directionalmovement/DirectionalMovementSystem.inc';
+require_once WENDY_ROOT . '/app/model/directionalmovement/TrendBalancePointSystem.inc';
+require_once WENDY_ROOT . '/app/model/directionalmovement/TrendBalancePointTrade.inc';

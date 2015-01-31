@@ -29,7 +29,7 @@ class DirectionalMovement implements DirectionalMovementInterface
 	public function __construct($data) {
 
 		foreach ($data as $key => &$curr) {
-
+			$curr['x'] = ($curr['high'] + $curr['low'] + $curr['close']) / 3;
 			if ($key === 0) {
 				continue;
 			}

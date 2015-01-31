@@ -18,27 +18,25 @@ require_once WENDY_ROOT . '/app/bootstrap.php';
 print '<pre>';
 
 $data = new CSVData(WENDY_ROOT . '/data/AUDUSD_day.csv');
-$dms = new DirectionalMovementSystem($data->getCSVData());
+$dms = new TrendBalancePointSystem($data->getCSVData());
 $dms->crunch();
 $trades = $dms->getTrades();
 
 $profit = 0;
 $winners = 0;
-$account = 2000;
-$spread = .0004;
-$leverage = 50;
-foreach ($trades as $trade) {
-	$tp = $trade->profit();
-	$profit += $tp;
-	$ac_profit = ($account / 10) * ($tp - $spread) * 50;
-	$account += $ac_profit;
-	if ($tp > 0) {
+$w = 0;
+$l = 0;
+foreach($trades as $trade) {
+	$p = $trade->profit();
+	if ($p > 0) {
+		$w += $p;
 		$winners++;
+	} else {
+		$l += $p;
 	}
+	$profit += $trade->profit();
 }
-
-print 'Total trades: ' . count($trades) . '<br />';
-print 'Total profit: ' . number_format($profit, 4) . '<br />';
-print 'Average profit: ' . number_format($profit / count($trades), 4) . '<br />';
-print 'Success rate: ' . round($winners / count($trades) * 100) . '%<br />';
-var_dump($account);
+var_dump(round($winners / count($trades) * 100));
+var_dump($profit / count($trades));
+var_dump($w / $winners);
+var_dump($l / (count($trades) - $winners));
