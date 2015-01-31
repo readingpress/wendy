@@ -28,11 +28,11 @@ class DirectionalMovementSystem extends DirectionalMovement implements Direction
 		foreach ($this->getData() as $key => $curr) {
 
 			// We need at least a current and a previous bar
-			if ($key === 0) {
+			if ($key === 0 || empty($curr['adx'])) {
 				continue;
 			}
 
-			/*if ($this->trade && $tp = $this->takeProfit($curr, $prev)) {
+			if ($this->trade && $tp = $this->takeProfit($curr, $prev)) {
 				$this->trade->close($tp, $curr);
 				$this->trades[] = $this->trade;
 				$this->trade = FALSE;
@@ -42,10 +42,13 @@ class DirectionalMovementSystem extends DirectionalMovement implements Direction
 				$this->trade->close($stop, $curr);
 				$this->trades[] = $this->trade;
 				$this->trade = FALSE;
-			}*/
+			}
+			if ($curr['adx'] < $curr['plus_di'] && $curr['adx'] < $curr['minus_di']) {
+				continue;
+			}
 
 			$prev = $data[$key - 1];
-			if (/*!$this->trade &&*/ $dir = $this->cross($curr, $prev)) {
+			if (!$this->trade && $dir = $this->cross($curr, $prev)) {
 				// @TODO remove this maybe. The first condition above can be removed to
 				// see the earlier state of the system.
 				if ($this->trade) {

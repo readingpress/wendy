@@ -69,6 +69,12 @@ class DirectionalMovement implements DirectionalMovementInterface
 			// Once we have calculated the adx once, from there on out we use a moving
 			// average calculation method rather than a traditional average.
 			$this->proxyADX($curr, $prev);
+			// Once we have adx values for an interval of time that is equivalent to
+			// the average period, we can finally calculate the Average Directional
+			// index rating.
+			if (isset($data[$key - $this->average_period + 1]['adx'])) {
+				$this->adxr($curr, $data[$key - $this->average_period + 1]);
+			}
 		}
 		$this->data = $data;
 
@@ -255,6 +261,18 @@ class DirectionalMovement implements DirectionalMovementInterface
 		// Then we add the current DX, and divide the whole thing by the average
 		// period.
 		$curr['adx'] = round(($calc + $curr['dx']) / $this->average_period);
+	}
+
+	/**
+	 * Add the Average Directional Index Rating to the current bars data.
+	 *
+	 * @param array $curr
+	 *	The current time bar. Passed by reference.
+	 * @param array $prev
+	 *  The time bar x days ago, where x is the average period.
+	 */
+	private function adxr(&$curr, $prev) {
+		$curr['adxr'] = round(($curr['adx'] + $prev['adx']) / 2);
 	}
 
 }
