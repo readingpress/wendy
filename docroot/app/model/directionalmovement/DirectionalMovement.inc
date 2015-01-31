@@ -16,9 +16,9 @@ class DirectionalMovement implements DirectionalMovementInterface
 
 	/**
 	 * @var array $data
-	 *  The number of intervals to use in averages for the data in this system.
+	 *  And array of chart bars
 	 */
-	private $data = 14;
+	private $data = array();
 
 	/**
 	 * Add Directional Movement Data to Market Information.
@@ -77,7 +77,6 @@ class DirectionalMovement implements DirectionalMovementInterface
 			}
 		}
 		$this->data = $data;
-
 	}
 
 	/**
@@ -174,6 +173,7 @@ class DirectionalMovement implements DirectionalMovementInterface
 		}
 		return array(
 			"tr_$this->average_period" => $tr_sum,
+			"atr_$this->average_period" => $tr_sum / $this->average_period,
 			"plus_dm_$this->average_period" => $plus_dm_sum,
 			"minus_dm_$this->average_period" => $minus_dm_sum,
 		);
@@ -200,6 +200,7 @@ class DirectionalMovement implements DirectionalMovementInterface
 			// in the current bar's single value in its place.
 			$curr["{$key}_{$this->average_period}"] = $prev_value - $chunk + $curr["{$key}_1"];
 		}
+		$curr["atr_{$this->average_period}"] = $curr["tr_{$this->average_period}"] / $this->average_period;
 	}
 
 	/**
