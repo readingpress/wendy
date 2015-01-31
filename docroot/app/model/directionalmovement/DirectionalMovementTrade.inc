@@ -62,6 +62,16 @@ class DirectionalMovementTrade
 	}
 
 	/**
+	 * Returns the direction of the current trade.
+	 *
+	 * @return string
+	 *  The direction of the current trade.
+	 */
+	public function getDir() {
+		return $this->dir;
+	}
+
+	/**
 	 * Returns whether the stop for the trade has been hit in a bar.
 	 *
 	 * @param array $bar

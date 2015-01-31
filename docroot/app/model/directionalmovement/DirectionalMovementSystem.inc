@@ -26,39 +26,23 @@ class DirectionalMovementSystem extends DirectionalMovement implements Direction
 	public function crunch() {
 		$data = $this->getData();
 		foreach ($this->getData() as $key => $curr) {
-
-			// We need at least a current and a previous bar
-			if ($key === 0 || empty($curr['adx'])) {
-				continue;
-			}
-
-			if ($this->trade && $tp = $this->takeProfit($curr, $prev)) {
-				$this->trade->close($tp, $curr);
-				$this->trades[] = $this->trade;
-				$this->trade = FALSE;
-			}
-
-			if ($this->trade && $stop = $this->trade->stop($curr)) {
-				$this->trade->close($stop, $curr);
-				$this->trades[] = $this->trade;
-				$this->trade = FALSE;
-			}
-			if ($curr['adx'] < $curr['plus_di'] && $curr['adx'] < $curr['minus_di']) {
+			// We need at least the adxr.
+			if (empty($curr['adxr'])) {
 				continue;
 			}
 
 			$prev = $data[$key - 1];
-			if (!$this->trade && $dir = $this->cross($curr, $prev)) {
-				// @TODO remove this maybe. The first condition above can be removed to
-				// see the earlier state of the system.
+			if ($dir = $this->cross($curr, $prev)) {
+				// If there is a trade, close it out.
 				if ($this->trade) {
 					$this->trade->close($curr['close'], $curr);
 					$this->trades[] = $this->trade;
+					$this->trade = FALSE;
 				}
+
 				$this->trade = new DirectionalMovementTrade($curr['close'], $dir, $curr);
 			}
 		}
-
 	}
 
 	/**
@@ -97,6 +81,12 @@ class DirectionalMovementSystem extends DirectionalMovement implements Direction
 					$trade = 'short';
 					break;
 			}
+		}
+		// If we are currently in a trade and the direction we just discerned 
+		// matches the direction of the current trade, it means that the lines 
+		// simply met, but did not cross. In this case we stay in the current trade.
+		if ($this->trade && $this->trade->getDir() === $trade) {
+			$trade = FALSE;
 		}
 		return $trade;
 	}
